@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+    username: postgres.apjxjgpqmtqrulnnmxkd
+    password: x0EimdwwS5EyVzSR
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+cloudinary:
+  cloud_name: dxks8jhi6
+  api_key: 976612437943113
+  api_secret: wk-UNwqhO4xqDUj_MspCryfxbfM
