@@ -5,9 +5,13 @@ import com.shop.akisshop.productImages.repository.ProductImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +19,7 @@ import com.shop.akisshop.category.entity.ProductCategory;
 import com.shop.akisshop.category.service.CategoryService;
 import com.shop.akisshop.cloudinary.service.CloudinaryService;
 import com.shop.akisshop.exceptions.DataNotFoundException;
+import com.shop.akisshop.product.dto.ProductListReponseDto;
 import com.shop.akisshop.product.dto.ProductRequestDto;
 import com.shop.akisshop.product.dto.ProductResponseDto;
 import com.shop.akisshop.product.entity.Product;
@@ -148,5 +153,108 @@ public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
         productRespository.save(product);
         return "product updated succuessfully";
     }
+    @Override
+    public List<ProductListReponseDto> getAllProduct(Pageable pageable) {
+        Page<Product> products = productRespository.findAll(pageable);
 
+        List<ProductListReponseDto> productList = products.stream()
+            .map(product -> {
+                ProductListReponseDto dto = new ProductListReponseDto();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setPrice(product.getPrice());
+                dto.setQuantity(product.getQuantity());
+
+                if (product.getCategory() != null) {
+                    ProductListReponseDto.CategoryDto categoryDto = new ProductListReponseDto.CategoryDto();
+                    categoryDto.setId(product.getCategory().getId());
+                    categoryDto.setName(product.getCategory().getName());
+                    dto.setCategoryDto(categoryDto);
+                } else {
+                    dto.setCategoryDto(null);
+                }
+
+                if (product.getProductImage() != null) {
+                    ProductListReponseDto.ImageDto imageDto = new ProductListReponseDto.ImageDto();
+                    imageDto.setId(product.getProductImage().getId());
+                    imageDto.setImageUrl(product.getProductImage().getImageUrl());
+                    dto.setImageDto(imageDto);
+                } else {
+                    dto.setImageDto(null);
+                }
+                return dto;
+            }).collect(Collectors.toList());
+            return productList;
+    }
+    @Override
+    public List<ProductListReponseDto> getProductByCategory(Long categoryId, Pageable pageable) {
+        Page<Product> products = productRespository.findByCategoryId(categoryId, pageable);
+
+        List<ProductListReponseDto> productList = products.stream()
+            .map(product -> {
+                ProductListReponseDto dto = new ProductListReponseDto();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setPrice(product.getPrice());
+                dto.setQuantity(product.getQuantity());
+
+                if (product.getCategory() != null) {
+                    ProductListReponseDto.CategoryDto categoryDto = new ProductListReponseDto.CategoryDto();
+                    categoryDto.setId(product.getCategory().getId());
+                    categoryDto.setName(product.getCategory().getName());
+                    dto.setCategoryDto(categoryDto);
+                } else {
+                    dto.setCategoryDto(null);
+                }
+
+                if (product.getProductImage() != null) {
+                    ProductListReponseDto.ImageDto imageDto = new ProductListReponseDto.ImageDto();
+                    imageDto.setId(product.getProductImage().getId());
+                    imageDto.setImageUrl(product.getProductImage().getImageUrl());
+                    dto.setImageDto(imageDto);
+                } else {
+                    dto.setImageDto(null);
+                }
+               return dto;
+                
+        }).collect(Collectors.toList());
+        return productList;
+    }
+    @Override
+    public List<ProductListReponseDto> getProductByName(String name, Pageable pageable) {
+        Page<Product> products = productRespository.findByNameContainingIgnoreCase(name, pageable);
+
+        List<ProductListReponseDto> productList = products.stream()
+            .map(product -> {
+                ProductListReponseDto dto = new ProductListReponseDto();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setPrice(product.getPrice());
+                dto.setQuantity(product.getQuantity());
+
+                if (product.getCategory() != null) {
+                    ProductListReponseDto.CategoryDto categoryDto = new ProductListReponseDto.CategoryDto();
+                    categoryDto.setId(product.getCategory().getId());
+                    categoryDto.setName(product.getCategory().getName());
+                    dto.setCategoryDto(categoryDto);
+                } else {
+                    dto.setCategoryDto(null);
+                }
+
+                if (product.getProductImage() != null) {
+                    ProductListReponseDto.ImageDto imageDto = new ProductListReponseDto.ImageDto();
+                    imageDto.setId(product.getProductImage().getId());
+                    imageDto.setImageUrl(product.getProductImage().getImageUrl());
+                    dto.setImageDto(imageDto);
+                } else {
+                    dto.setImageDto(null);
+                }
+                return dto;
+            }).collect(Collectors.toList());
+            return productList;
+    }
+    @Override
+    public void deleteProduct(Long id) {
+        productRespository.deleteById(id);
+    }
 }

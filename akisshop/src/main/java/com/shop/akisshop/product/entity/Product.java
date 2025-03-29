@@ -3,7 +3,9 @@ package com.shop.akisshop.product.entity;
 import java.math.BigDecimal;
 
 import com.shop.akisshop.category.entity.ProductCategory;
+import com.shop.akisshop.productImages.entity.ProductImage;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,4 +42,7 @@ public class Product {
 
     @Column(nullable = false)
     private int quantity;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductImage productImage;
 }
